@@ -12,13 +12,14 @@ def upload():
 			return render_template('form.html', msg="please upload a file")
 		UPLOAD_FOLDER=os.path.join(app.root_path, 'uploads/images')
 		image.save(os.path.join(UPLOAD_FOLDER, secure_filename(image.filename)))
-		url = "https://981b672b3839.ngrok.io"
-		files = {'file': open('uploads/images/'+image.filename, 'rb')}
+		url = "https://d79ce85554a0.ngrok.io"
+		fn=secure_filename(image.filename)
+		print(fn)
+		files = {'file': open('uploads/images/'+fn, 'rb')}
 		res=requests.post(url, files=files)
-		tags=json.loads(res.text)
+		tags=(json.loads(res.text))
 		print(tags)
-		tag_list=""
-		row=["uploads/images"+image.filename, ",".join(tags["bsx"])]
+		row=["uploads/images"+fn, ",".join(tags["bsx"])]
 		with open("uploads/tags.csv", 'a+') as csvfile:
 			csvwriter = csv.writer(csvfile)
 			csvwriter.writerow(row)
