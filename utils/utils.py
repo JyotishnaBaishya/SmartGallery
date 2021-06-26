@@ -4,7 +4,7 @@ from tensorflow.keras.applications.vgg19 import preprocess_input, decode_predict
 from tensorflow.keras.models import Model
 import numpy as np
 
-def tags(image):
+def find_tags(image):
   model=VGG19()
   image=np.asarray(image.resize((224, 224)))[..., :3]
   image=np.expand_dims(image, 0)

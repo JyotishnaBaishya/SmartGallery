@@ -1,0 +1,12 @@
+<form method="GET" action="{{ url_for('search') }}">
+	<input type="text" name="key" />
+	<input type="submit" />
+</form>
+<div><a href="{{url_for('upload')}}">upload</a></div>
+<div style="padding-top: 10px;">
+{% if res %}
+	{% for i in res %}
+	<img width="200" height="200" src="{{url_for('static', filename=i)}}" />
+	{% endfor %}
+{% endif %}
+<div>

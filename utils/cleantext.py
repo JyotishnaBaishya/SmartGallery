@@ -1,6 +1,6 @@
-import re
+import re, nltk
 from nltk.corpus import stopwords
-from nltk.stem.snowball import  SnowballStemmer
+from nltk.stem.snowball import SnowballStemmer
 from nltk import word_tokenize
 import csv
 
@@ -13,9 +13,8 @@ def normalize_text(text):
     stemmed = ' '.join([word for word in text.split() if word not in stopwords_set])
     return(stemmed)
 
-def find_topic(t):
+def keywords(t):
     t= normalize_text(t)
     words=word_tokenize(t)
     print(words)
-
-find_topic("he is Eating cake cookie")    
+    return words
