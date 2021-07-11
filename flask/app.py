@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, url_for, jsonify, make_respon
 from werkzeug.utils import secure_filename
 import csv, os, requests, json
 from utils.cleantext import keywords
-from utils.utils import find_tags
+# from utils.utils import find_tags
 from PIL import Image
 from io import BytesIO
 
@@ -37,19 +37,19 @@ def upload():
 		if not image:
 			return render_template('form.html', msg="please upload a file")
 		image.save(os.path.join(UPLOAD_FOLDER, secure_filename(image.filename)))
-		image_byte=Image.open(BytesIO(image))
-		classes=find_tags(image_byte)
-		tags={}
-		tags['bsx']=[]
-		for i in range(0, len(classes[0])):
-			tags['bsx'].append(classes[0][i][1])
-		# url = "https://e26fcd3cca2a.ngrok.io"
-		# fn=secure_filename(image.filename)
-		# print(fn)
-		# files = {'file': open('static/images/'+fn, 'rb')}
-		# res=requests.post(url, files=files)
-		# tags=(json.loads(res.text))
-		# print(tags)
+		# image_byte=Image.open(BytesIO(image))
+		# classes=find_tags(image_byte)
+		# tags={}
+		# tags['bsx']=[]
+		# for i in range(0, len(classes[0])):
+		# 	tags['bsx'].append(classes[0][i][1])
+		url = "https://7ccd04f93c1c.ngrok.io"
+		fn=secure_filename(image.filename)
+		print(fn)
+		files = {'file': open('static/images/'+fn, 'rb')}
+		res=requests.post(url, files=files)
+		tags=(json.loads(res.text))
+		print(tags)
 		row=["images/"+fn, ",".join(tags["bsx"])]
 		with open("static/tags.csv", 'a+') as csvfile:
 			csvwriter = csv.writer(csvfile)
