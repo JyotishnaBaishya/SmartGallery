@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, url_for, jsonify, make_response
 from werkzeug.utils import secure_filename
 import csv, os, requests, json
-from utils.cleantext import keywords
-# from utils.utils import find_tags
+from utils.textp import keywords, sim
+from utils.utils import find_tags
 from PIL import Image
 from io import BytesIO
 
@@ -18,17 +18,19 @@ def search():
 	if not key:
 		return render_template('search.html')
 	keys=keywords(key)
-	if keys:
-		keys=set(keys)
+	# if keys:
+	# 	keys=set(keys)
 	res=[]
 	with open("static/tags.csv", 'r') as csvfile:
 		csvreader = csv.reader(csvfile)
 		fields = next(csvreader)
 		for row in csvreader:
 			li=keywords(row[1])
-			li=set(li)
-			if keys & li:
-				res.append(row[0])
+			# li=set(li)
+			max_sim= sim(keys, li)
+			if max_sim:
+				res.append(max_sim,row[0])
+				res.sort()
 	return render_template('search.html', res=res)
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
