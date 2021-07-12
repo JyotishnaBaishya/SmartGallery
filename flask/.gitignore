@@ -113,7 +113,7 @@ venv.bak/
 # Spyder project settings
 .spyderproject
 .spyproject
-/utils/SnowballStemmer
+/utils/SnowballStemmer/corpora
 
 
 # Rope project settings
