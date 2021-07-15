@@ -156,11 +156,20 @@ class _ImageCaptureState extends State<ImageCapture> {
     http.Response response = await http.Response.fromStream(await request.send());
     return response.body;
   }
+  Widget onSubmitted(String keyword){
+    var params={
+      'key': keyword,
+    };
+    var res=http.get(Uri.https("http://127.0.0.1:5000", '/', params));
+    print(res);
+    return ImageGrid(imageList: this.imageList);
+
+  }
    _ImageCaptureState() {
     searchBar = new SearchBar(
         inBar: false,
         setState: setState,
-        onSubmitted: print,
+        onSubmitted: onSubmitted,
         buildDefaultAppBar: buildAppBar);
   }
   @override
@@ -182,7 +191,7 @@ class _ImageCaptureState extends State<ImageCapture> {
       floatingActionButton: FloatingActionButton(
         onPressed: ()async {
           var url="http://127.0.0.1:5000/upload";
-          var res = await uploadImage(imageList, url);
+          var res = await uploadImage(this.imageList, url);
           print(res);
         }
       ,

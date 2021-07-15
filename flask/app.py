@@ -16,22 +16,23 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def search():
 	key=request.args.get('key')
 	if not key:
-		return render_template('search.html')
-	keys=keywords(key)
-	# if keys:
-	# 	keys=set(keys)
-	res=[]
-	with open("static/tags.csv", 'r') as csvfile:
-		csvreader = csv.reader(csvfile)
-		fields = next(csvreader)
-		for row in csvreader:
-			li=keywords(row[1])
-			# li=set(li)
-			max_sim= sim(keys, li)
-			if max_sim:
-				res.append(max_sim,row[0])
-				res.sort()
-	return render_template('search.html', res=res)
+		return jsonify({"Sc": "nokey"})
+	return jsonify({"SX": "OK"})
+	# keys=keywords(key)
+	# # if keys:
+	# # 	keys=set(keys)
+	# res=[]
+	# with open("static/tags.csv", 'r') as csvfile:
+	# 	csvreader = csv.reader(csvfile)
+	# 	fields = next(csvreader)
+	# 	for row in csvreader:
+	# 		li=keywords(row[1])
+	# 		# li=set(li)
+	# 		max_sim= sim(keys, li)
+	# 		if max_sim:
+	# 			res.append(max_sim,row[0])
+	# 			res.sort()
+	# return render_template('search.html', res=res)
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
 	if request.method=="POST":
