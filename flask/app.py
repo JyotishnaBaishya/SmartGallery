@@ -48,7 +48,7 @@ def upload():
 		# tags['bsx']=[]
 		# for i in range(0, len(classes[0])):
 		# 	tags['bsx'].append(classes[0][i][1])
-		url = "https://58d39ec19bc5.ngrok.io"
+		url = "https://44a31ce0f630.ngrok.io/"
 		fn=secure_filename(image.filename)
 		print(fn)
 		files = {'file': open('static/images/'+fn, 'rb')}
