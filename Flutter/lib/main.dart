@@ -141,20 +141,23 @@ class ImageCapture extends StatefulWidget {
 }
 
 class _ImageCaptureState extends State<ImageCapture> {
-    SearchBar searchBar;
-    List imageList;
-    AppBar buildAppBar(BuildContext context) {
-      return new AppBar(
-          backgroundColor: Colors.red,
-          actions: [searchBar.getSearchAction(context)]);
+  SearchBar searchBar;
+  List imageList;
+  AppBar buildAppBar(BuildContext context) {
+    return new AppBar(
+        backgroundColor: Colors.red,
+        actions: [searchBar.getSearchAction(context)]);
   }
+
   Future<String> uploadImage(filename, url) async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.files.add(await http.MultipartFile.fromPath('', filename));
-    http.Response response = await http.Response.fromStream(await request.send());
+    http.Response response =
+        await http.Response.fromStream(await request.send());
     return response.body;
   }
-   _ImageCaptureState() {
+
+  _ImageCaptureState() {
     searchBar = new SearchBar(
         inBar: false,
         setState: setState,
@@ -168,23 +171,22 @@ class _ImageCaptureState extends State<ImageCapture> {
       body: Container(
         child: FutureBuilder(
           builder: (context, status) {
-          this.imageList= _photoDir
-          .listSync(recursive: true)
-          .map((item) => item.path)
-          .where((item) => item.endsWith(".jpeg"))
-          .toList(growable: false);
+            this.imageList = _photoDir
+                .listSync(recursive: true)
+                .map((item) => item.path)
+                .where((item) => item.endsWith(".jpeg"))
+                .toList(growable: false);
             return ImageGrid(imageList: this.imageList);
           },
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: ()async {
-          var url="http://127.0.0.1:5000/upload";
-          var res = await uploadImage(imageList[0], url);
-          print(res);
-        }
-      ,
-      child: Icon(Icons.add_a_photo_outlined)),
+          onPressed: () async {
+            var url = "http://127.0.0.1:5000/upload";
+            var res = await uploadImage(imageList[0], url);
+            print(res);
+          },
+          child: Icon(Icons.add_a_photo_outlined)),
     );
   }
 }
@@ -213,12 +215,9 @@ class ImageGrid extends StatelessWidget {
             child: InkWell(
               onTap: () => {
                 refreshGridView = Navigator.push(context,
-                        MaterialPageRoute(builder: (context) {
-                  return Text(
-                    name
-                  );
-                }))
-                    .then((refreshGridView) {
+                    MaterialPageRoute(builder: (context) {
+                  return Text(name);
+                })).then((refreshGridView) {
                   if (refreshGridView != null) {
                     build(context);
                   }
