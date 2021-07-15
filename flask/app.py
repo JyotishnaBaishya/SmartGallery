@@ -36,30 +36,37 @@ def search():
 def upload():
 	if request.method=="POST":
 		print("jskdj")
-		image=request.files.get('')
-		if not image:
+		images=[]
+		for x in request.files:
+			images.append(request.files[x])
+		if not images:
 			print("xyz")
 			return "dsjbks"
-		print("jskdj")
-		image.save(os.path.join(UPLOAD_FOLDER, secure_filename(image.filename)))
-		# image_byte=Image.open(BytesIO(image))
-		# classes=find_tags(image_byte)
-		# tags={}
-		# tags['bsx']=[]
-		# for i in range(0, len(classes[0])):
-		# 	tags['bsx'].append(classes[0][i][1])
-		url = "https://44a31ce0f630.ngrok.io/"
-		fn=secure_filename(image.filename)
-		print(fn)
-		files = {'file': open('static/images/'+fn, 'rb')}
-		res=requests.post(url, files=files)
-		tags=(json.loads(res.text))
-		print(tags)
-		row=["images/"+fn, ",".join(tags["bsx"])]
-		with open("static/tags.csv", 'a+') as csvfile:
-			csvwriter = csv.writer(csvfile)
-			csvwriter.writerow(row)
-		return make_response(jsonify({'tags': tags["bsx"]}), 200)
+		print(images)
+		restx={}
+		for image in images:
+			print(image.filename)
+			image.save(os.path.join(UPLOAD_FOLDER, secure_filename(image.filename)))
+			# image_byte=Image.open(BytesIO(image))
+			# classes=find_tags(image_byte)
+			# tags={}
+			# tags['bsx']=[]
+			# for i in range(0, len(classes[0])):
+			# 	tags['bsx'].append(classes[0][i][1])
+			url = "https://2c206cc974df.ngrok.io"
+			fn=secure_filename(image.filename)
+			print(fn)
+			files = {'file': open('static/images/'+fn, 'rb')}
+			res=requests.post(url, files=files)
+			print(res)
+			tags=(json.loads(res.text))
+			print(tags)
+			row=["images/"+fn, ",".join(tags["bsx"])]
+			restx[fn]=tags["bsx"]
+			with open("static/tags.csv", 'a+') as csvfile:
+				csvwriter = csv.writer(csvfile)
+				csvwriter.writerow(row)
+		return make_response(jsonify({'tags': restx}), 200)
 	return render_template('form.html', msg="")
 
 

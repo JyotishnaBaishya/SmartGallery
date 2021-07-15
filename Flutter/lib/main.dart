@@ -149,19 +149,28 @@ class _ImageCaptureState extends State<ImageCapture> {
         actions: [searchBar.getSearchAction(context)]);
   }
 
-  Future<String> uploadImage(filename, url) async {
+  Future<String> uploadImage(images, url) async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
-    request.files.add(await http.MultipartFile.fromPath('', filename));
+    images.forEach((file) async {
+      request.files
+          .add(await http.MultipartFile.fromPath(file.toString(), file));
+    });
     http.Response response =
         await http.Response.fromStream(await request.send());
     return response.body;
+  }
+
+  Widget onSubmitted(String keyword) {
+    // var url1="http://127.0.0.1:5000/";
+    print("hola!");
+    return ImageGrid(imageList: this.imageList);
   }
 
   _ImageCaptureState() {
     searchBar = new SearchBar(
         inBar: false,
         setState: setState,
-        onSubmitted: print,
+        onSubmitted: onSubmitted,
         buildDefaultAppBar: buildAppBar);
   }
   @override
@@ -183,7 +192,7 @@ class _ImageCaptureState extends State<ImageCapture> {
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
             var url = "http://127.0.0.1:5000/upload";
-            var res = await uploadImage(imageList[0], url);
+            var res = await uploadImage(imageList, url);
             print(res);
           },
           child: Icon(Icons.add_a_photo_outlined)),
