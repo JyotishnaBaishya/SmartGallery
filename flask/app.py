@@ -1,8 +1,8 @@
 from flask import Flask, render_template, request, url_for, jsonify, make_response
 from werkzeug.utils import secure_filename
 import csv, os, requests, json
-from utils.textp import keywords, sim
-from utils.utils import find_tags
+# from utils.textp import keywords, sim
+# from utils.utils import find_tags
 from PIL import Image
 from io import BytesIO
 
@@ -35,9 +35,12 @@ def search():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
 	if request.method=="POST":
-		image=request.files.get('image')
+		print("jskdj")
+		image=request.files.get('')
 		if not image:
-			return render_template('form.html', msg="please upload a file")
+			print("xyz")
+			return "dsjbks"
+		print("jskdj")
 		image.save(os.path.join(UPLOAD_FOLDER, secure_filename(image.filename)))
 		# image_byte=Image.open(BytesIO(image))
 		# classes=find_tags(image_byte)
@@ -45,7 +48,7 @@ def upload():
 		# tags['bsx']=[]
 		# for i in range(0, len(classes[0])):
 		# 	tags['bsx'].append(classes[0][i][1])
-		url = "https://7ccd04f93c1c.ngrok.io"
+		url = "https://58d39ec19bc5.ngrok.io"
 		fn=secure_filename(image.filename)
 		print(fn)
 		files = {'file': open('static/images/'+fn, 'rb')}
