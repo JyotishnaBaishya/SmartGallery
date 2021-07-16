@@ -1,4 +1,7 @@
 import re, nltk
+nltk.download("stopwords")
+nltk.download("punkt")
+nltk.download("wordnet")
 from nltk.corpus import stopwords, wordnet as wn
 from nltk.stem.snowball import SnowballStemmer
 from nltk import word_tokenize

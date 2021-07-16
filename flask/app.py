@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, url_for, jsonify, make_response
 from werkzeug.utils import secure_filename
 import csv, os, requests, json
-# from utils.textp import keywords, sim
+from utils.textp import keywords, sim
 # from utils.utils import find_tags
 from PIL import Image
 from io import BytesIO
@@ -16,22 +16,26 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def search():
 	key=request.args.get('key')
 	if not key:
-		return render_template('search.html')
+		return jsonify({"Sc": "nokey"})
+	
 	keys=keywords(key)
-	# if keys:
-	# 	keys=set(keys)
+	if keys:
+		keys=set(keys)
 	res=[]
 	with open("static/tags.csv", 'r') as csvfile:
 		csvreader = csv.reader(csvfile)
 		fields = next(csvreader)
 		for row in csvreader:
 			li=keywords(row[1])
-			# li=set(li)
-			max_sim= sim(keys, li)
-			if max_sim:
-				res.append(max_sim,row[0])
-				res.sort()
-	return render_template('search.html', res=res)
+			li=set(li)
+			if keys & li: 
+				res.append(row[0])
+			# max_sim= sim(keys, li)
+			# if max_sim:
+			# 	res.append(max_sim,row[0])
+			# 	res.sort()
+	return jsonify({"SX": res})			
+	# return render_template('search.html', res=res)
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
 	if request.method=="POST":
@@ -43,7 +47,7 @@ def upload():
 			print("xyz")
 			return "dsjbks"
 		print(images)
-		restx={}
+		# restx={}
 		for image in images:
 			print(image.filename)
 			image.save(os.path.join(UPLOAD_FOLDER, secure_filename(image.filename)))
@@ -53,7 +57,7 @@ def upload():
 			# tags['bsx']=[]
 			# for i in range(0, len(classes[0])):
 			# 	tags['bsx'].append(classes[0][i][1])
-			url = "https://2c206cc974df.ngrok.io"
+			url = "https://b23474af9b59.ngrok.io"
 			fn=secure_filename(image.filename)
 			print(fn)
 			files = {'file': open('static/images/'+fn, 'rb')}
@@ -61,12 +65,12 @@ def upload():
 			print(res)
 			tags=(json.loads(res.text))
 			print(tags)
-			row=["images/"+fn, ",".join(tags["bsx"])]
-			restx[fn]=tags["bsx"]
+			row=["/storage/emulated/0/Download/"+image.filename, ",".join(tags["bsx"])]
+			# restx[fn]=tags["bsx"]
 			with open("static/tags.csv", 'a+') as csvfile:
 				csvwriter = csv.writer(csvfile)
 				csvwriter.writerow(row)
-		return make_response(jsonify({'tags': restx}), 200)
+		return make_response(jsonify({'tags': "okay"}), 200)
 	return render_template('form.html', msg="")
 
 

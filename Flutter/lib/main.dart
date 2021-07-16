@@ -113,6 +113,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 // import 'package:image_picker/image_picker.dart';
 // import 'package:path/path.dart';
 // import 'package:path_provider/path_provider.dart';
@@ -160,11 +161,32 @@ class _ImageCaptureState extends State<ImageCapture> {
     return response.body;
   }
 
-  Widget onSubmitted(String keyword) {
-    // var url1="http://127.0.0.1:5000/";
-    print("hola!");
-    return ImageGrid(imageList: this.imageList);
+  Future<String> search(key) async {
+    var params = {
+      'key': key,
+    };
+    var res = await http.get(Uri.http("127.0.0.1:5000", '/', params));
+    return res.body;
   }
+
+  Future<Widget> onSubmitted(String keyword) async {
+    var res = await search(keyword);
+    print(res);
+    var values = json.decode(res);
+    List searchList;
+    // values.map((val) => searchList = val.toList());
+    searchList = values["SX"];
+    print(searchList);
+    return ImageGrid(imageList: searchList);
+  }
+  // Widget onSubmitted(String keyword) {
+  //   var params = {
+  //     'key': keyword,
+  //   };
+  //   var res = http.get(Uri.https("http://127.0.0.1:5000", '/', params));
+  //   print(res);
+  //   return ImageGrid(imageList: this.imageList);
+  // }
 
   _ImageCaptureState() {
     searchBar = new SearchBar(
@@ -192,7 +214,7 @@ class _ImageCaptureState extends State<ImageCapture> {
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
             var url = "http://127.0.0.1:5000/upload";
-            var res = await uploadImage(imageList, url);
+            var res = await uploadImage(this.imageList, url);
             print(res);
           },
           child: Icon(Icons.add_a_photo_outlined)),
@@ -211,7 +233,7 @@ class ImageGrid extends StatelessWidget {
     return GridView.builder(
       itemCount: imageList.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, childAspectRatio: 3.0 / 4.6),
+          crossAxisCount: 2, childAspectRatio: 4.6 / 4.0),
       itemBuilder: (context, index) {
         File file = new File(imageList[index]);
         String name = file.path;
