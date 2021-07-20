@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request, url_for, jsonify, make_response
 from werkzeug.utils import secure_filename
 import csv, os, requests, json
-from utils.textp import keywords, sim
+from utils.textp import keywords
+from utils.v import similarity
 # from utils.utils import find_tags
 from PIL import Image
 from io import BytesIO
@@ -17,19 +18,15 @@ def search():
 	key=request.args.get('key')
 	if not key:
 		return jsonify({"Sc": "nokey"})
-
-	keys=keywords(key)
-	if keys:
-		keys=set(keys)
 	res=[]
 	with open("static/tags.csv", 'r') as csvfile:
 		csvreader = csv.reader(csvfile)
 		fields = next(csvreader)
 		for row in csvreader:
-			li=keywords(row[1])
-			li=set(li)
-			if keys & li:
-				res.append(row[0])
+			sim=similarity(key, row[1])
+			if sim>0.001:
+				res.append(sim, row[1])
+				res.sort()
 			# max_sim= sim(keys, li)
 			# if max_sim:
 			# 	res.append(max_sim,row[0])
