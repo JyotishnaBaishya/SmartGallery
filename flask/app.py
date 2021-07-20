@@ -17,7 +17,7 @@ def search():
 	key=request.args.get('key')
 	if not key:
 		return jsonify({"Sc": "nokey"})
-	
+
 	keys=keywords(key)
 	if keys:
 		keys=set(keys)
@@ -28,13 +28,13 @@ def search():
 		for row in csvreader:
 			li=keywords(row[1])
 			li=set(li)
-			if keys & li: 
+			if keys & li:
 				res.append(row[0])
 			# max_sim= sim(keys, li)
 			# if max_sim:
 			# 	res.append(max_sim,row[0])
 			# 	res.sort()
-	return jsonify({"SX": res})			
+	return jsonify({"SX": res})
 	# return render_template('search.html', res=res)
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -67,7 +67,7 @@ def upload():
 			print(tags)
 			row=["/storage/emulated/0/Download/"+image.filename, ",".join(tags["bsx"])]
 			# restx[fn]=tags["bsx"]
-			with open("static/tags.csv", 'a+') as csvfile:
+			with open("static/tags.csv", 'w', newline='') as csvfile:
 				csvwriter = csv.writer(csvfile)
 				csvwriter.writerow(row)
 		return make_response(jsonify({'tags': "okay"}), 200)
