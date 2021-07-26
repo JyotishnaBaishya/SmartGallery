@@ -16,17 +16,19 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 @app.route('/', methods=['GET'])
 def search():
 	key=request.args.get('key')
-	if not key:
-		return jsonify({"Sc": "nokey"})
 	res=[]
+	if not key:
+	    return render_template('search.html', res=res)
+		# return jsonify({"Sc": "nokey"})
+	
 	with open("static/tags.csv", 'r') as csvfile:
 		csvreader = csv.reader(csvfile)
 		fields = next(csvreader)
 		for row in csvreader:
 			sim=similarity(key, row[1])
 			if sim>0.001:
-				res.append(sim, row[1])
-				res.sort()
+				res.append({sim:row[1]})
+				# res=sorted(res.keys())
 			# max_sim= sim(keys, li)
 			# if max_sim:
 			# 	res.append(max_sim,row[0])

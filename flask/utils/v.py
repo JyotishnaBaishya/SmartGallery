@@ -1,12 +1,12 @@
 from gensim.models  import KeyedVectors
 
-from textp import keywords
+from .textp import keywords
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
 
 from collections import Counter
 import itertools
-model=KeyedVectors.load("word2vec.model",mmap='r')
+model=KeyedVectors.load("utils\word2vec.model",mmap='r')
 print(model.vector_size)
 def map_word_frequency(document):
     return Counter(itertools.chain(*document))

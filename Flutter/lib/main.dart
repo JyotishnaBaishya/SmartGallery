@@ -114,25 +114,28 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
 // import 'package:image_picker/image_picker.dart';
 // import 'package:path/path.dart';
 // import 'package:path_provider/path_provider.dart';
 
 final Directory _photoDir = new Directory('/storage/emulated/0/Download');
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Document Scanner',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: ImageCapture(),
-    );
+        title: 'Document Scanner',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: ImageCapture());
   }
 }
 

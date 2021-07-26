@@ -3,12 +3,12 @@ nltk.download("stopwords")
 nltk.download("punkt")
 nltk.download("wordnet")
 from nltk.corpus import stopwords, wordnet as wn
-from nltk.stem import WordNetLemmmatizer
+from nltk.stem import PorterStemmer, WordNetLemmatizer
 from nltk import word_tokenize
 import csv
 
 def normalize_text(text):
-    lem=WordNetLemmmatizer()
+    lem=WordNetLemmatizer()
     stopwords_set= set(stopwords.words('english'))
     text = text.replace('\n',' ').lower().strip()
     text = re.sub("[^a-zA-Z]+", " ", text).split()
