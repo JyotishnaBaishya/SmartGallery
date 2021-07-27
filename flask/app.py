@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request, url_for, jsonify, make_response
 from werkzeug.utils import secure_filename
 import csv, os, requests, json
-from utils.textp import keywords
-from utils.v import similarity
+# from utils.textp import keywords
+# from utils.v import similarity
 # from utils.utils import find_tags
+from utils.encode import encode_text
 from PIL import Image
 from io import BytesIO
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 
 app=Flask(__name__)
 
@@ -20,7 +24,7 @@ def search():
 	if not key:
 	    return render_template('search.html', res=res)
 		# return jsonify({"Sc": "nokey"})
-	
+
 	with open("static/tags.csv", 'r') as csvfile:
 		csvreader = csv.reader(csvfile)
 		fields = next(csvreader)
@@ -47,28 +51,36 @@ def upload():
 			return "dsjbks"
 		print(images)
 		# restx={}
+		cred=credentials.Certificate('flask/utils/google-services.json')
+		firebase_admin.initialize_app(cred)
+		db = firestore.client()
 		for image in images:
 			print(image.filename)
-			image.save(os.path.join(UPLOAD_FOLDER, secure_filename(image.filename)))
+			# image.save(os.path.join(UPLOAD_FOLDER, secure_filename(image.filename)))
 			# image_byte=Image.open(BytesIO(image))
 			# classes=find_tags(image_byte)
 			# tags={}
 			# tags['bsx']=[]
 			# for i in range(0, len(classes[0])):
 			# 	tags['bsx'].append(classes[0][i][1])
-			url = "https://b23474af9b59.ngrok.io"
+			bytearr=image.read()
+			im=encode_text(bytearr)
+			url = "https://5985cd914b71.ngrok.io"
 			fn=secure_filename(image.filename)
 			print(fn)
-			files = {'file': open('static/images/'+fn, 'rb')}
+			files = {'file': bytearr}
 			res=requests.post(url, files=files)
 			print(res)
 			tags=(json.loads(res.text))
 			print(tags)
-			row=["/storage/emulated/0/Download/"+image.filename, ",".join(tags["bsx"])]
-			# restx[fn]=tags["bsx"]
-			with open("static/tags.csv", 'w', newline='') as csvfile:
-				csvwriter = csv.writer(csvfile)
-				csvwriter.writerow(row)
+			st=",".join(tags["bsx"]
+			# Use the application default credentials
+			data={
+				u'image': im,
+				u'tags': st,
+			}
+			# Add a new doc in collection 'cities' with ID 'LA'
+			db.collection(u'pictures').document(u'some_user').set(data)
 		return make_response(jsonify({'tags': "okay"}), 200)
 	return render_template('form.html', msg="")
 

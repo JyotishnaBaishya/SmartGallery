@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "722954405171",
+    "project_id": "smart-gallery-2af21",
+    "storage_bucket": "smart-gallery-2af21.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:722954405171:android:f2c2cd72ec344f03806a46",
+        "android_client_info": {
+          "package_name": "com.example.camera_gallery"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "722954405171-nfqqdhku4gb3nqpf0b3ogfgb58vi1pql.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD06jcM9tR71o5c-3qqIF7IYSKHerTOc24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "722954405171-nfqqdhku4gb3nqpf0b3ogfgb58vi1pql.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
