@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, url_for, jsonify, make_response
 from werkzeug.utils import secure_filename
 import csv, os, requests, json
-from utils.textp import keywords
-from utils.v import similarity
-from utils.utils import find_tags
+# from utils.textp import keywords
+# from utils.v import similarity
+# from utils.utils import find_tags
 from utils.encode import encode_text
 from PIL import Image
 from io import BytesIO
@@ -28,15 +28,25 @@ def search():
 	with open("static/tags.csv", 'r') as csvfile:
 		csvreader = csv.reader(csvfile)
 		fields = next(csvreader)
+		url="https://f679eeaaf26c.ngrok.io/similarity/"
 		for row in csvreader:
-			sim=similarity(key, row[1])
+			res1=requests.post(url, data=json.dumps({'s1': key, 's2': row[1]}))
+			ress=json.loads(res1.text)
+			print(ress)
+			sim=ress['sim']
 			if sim>0.001:
-				res.append(row[0])
+				res.append((sim, row[0]))
+				# res.append(row[0])
 			# max_sim= sim(keys, li)
 			# if max_sim:
 			# 	res.append(max_sim,row[0])
-			# 	res.sort()
-	return jsonify({"SX": res})
+		res.sort(reverse=True)
+		resx=[]
+		for r in res:
+			p, q=r
+			print(p)
+			resx.append(q)
+	return jsonify({"SX": resx})
 	# return render_template('search.html', res=res)
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
@@ -64,7 +74,7 @@ def upload():
 			# 	tags['bsx'].append(classes[0][i][1])
 			bytearr=image.read()
 			im=encode_text(bytearr)
-			url = "https://a7e096c85e7d.ngrok.io"
+			url = "https://f679eeaaf26c.ngrok.io"
 			fn=secure_filename(image.filename)
 			print(fn)
 			files = {'file': bytearr}
