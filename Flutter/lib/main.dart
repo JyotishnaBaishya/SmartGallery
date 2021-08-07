@@ -108,168 +108,219 @@
 // }
 
 // import 'dart:async';
+// @dart=2.9
 import 'dart:io';
+import 'package:camera_gallery/screens/signinscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-
+import 'screens/signinscreen.dart';
+import 'providers/social_auth.dart';
+import 'widgets/google_sign_in_button.dart';
+import 'screens/imagecapture.dart';
+import 'data/data.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:camera_gallery/res/custom_colors.dart';
 // import 'package:image_picker/image_picker.dart';
 // import 'package:path/path.dart';
 // import 'package:path_provider/path_provider.dart';
 
-final Directory _photoDir = new Directory('/storage/emulated/0/Download');
-
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Document Scanner',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: ImageCapture());
-  }
-}
-
-class ImageCapture extends StatefulWidget {
-  @override
-  _ImageCaptureState createState() => _ImageCaptureState();
-}
-
-class _ImageCaptureState extends State<ImageCapture> {
-  SearchBar searchBar;
-  List imageList;
-  AppBar buildAppBar(BuildContext context) {
-    return new AppBar(
-        backgroundColor: Colors.red,
-        actions: [searchBar.getSearchAction(context)]);
-  }
-
-  Future<String> uploadImage(images, url) async {
-    var request = http.MultipartRequest('POST', Uri.parse(url));
-    images.forEach((file) async {
-      request.files
-          .add(await http.MultipartFile.fromPath(file.toString(), file));
-    });
-    http.Response response =
-        await http.Response.fromStream(await request.send());
-    return response.body;
-  }
-
-  Future<String> search(key) async {
-    var params = {
-      'key': key,
-    };
-    var res = await http.get(Uri.http("127.0.0.1:5000", '/', params));
-    return res.body;
-  }
-
-  Future<Widget> onSubmitted(String keyword) async {
-    var res = await search(keyword);
-    print(res);
-    var values = json.decode(res);
-    List searchList;
-    // values.map((val) => searchList = val.toList());
-    searchList = values["SX"];
-    print(searchList);
-    return ImageGrid(imageList: searchList);
-  }
-  // Widget onSubmitted(String keyword) {
-  //   var params = {
-  //     'key': keyword,
-  //   };
-  //   var res = http.get(Uri.https("http://127.0.0.1:5000", '/', params));
-  //   print(res);
-  //   return ImageGrid(imageList: this.imageList);
-  // }
-
-  _ImageCaptureState() {
-    searchBar = new SearchBar(
-        inBar: false,
-        setState: setState,
-        onSubmitted: onSubmitted,
-        buildDefaultAppBar: buildAppBar);
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: searchBar.build(context),
-      body: Container(
-        child: FutureBuilder(
-          builder: (context, status) {
-            this.imageList = _photoDir
-                .listSync(recursive: true)
-                .map((item) => item.path)
-                .where((item) => item.endsWith(".jpeg"))
-                .toList(growable: false);
-            return ImageGrid(imageList: this.imageList);
-          },
-        ),
+      title: 'Smart Gallery',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
-      floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            var url = "http://127.0.0.1:5000/upload";
-            var res = await uploadImage(this.imageList, url);
-            print(res);
-          },
-          child: Icon(Icons.add_a_photo_outlined)),
+      home: Home(),
+//       routes: {
+//         '/': (ctx) => HomeRoute(),
+// //             TakePicScreen.routeName: (ctx) => TakePicScreen(),
+// //             ViewImages.routeName: (ctx) => ViewImages(),
+//       },
     );
   }
 }
 
-class ImageGrid extends StatelessWidget {
-  final List imageList;
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
 
-  const ImageGrid({Key key, this.imageList}) : super(key: key);
+class _HomeState extends State<Home> {
+  List<SliderModel> mySLides = new List<SliderModel>();
+  int slideIndex = 0;
+  PageController controller;
+
+  Widget _buildPageIndicator(bool isCurrentPage) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 2.0),
+      height: isCurrentPage ? 10.0 : 6.0,
+      width: isCurrentPage ? 10.0 : 6.0,
+      decoration: BoxDecoration(
+        color: isCurrentPage ? Colors.grey : Colors.grey[300],
+        borderRadius: BorderRadius.circular(12),
+      ),
+    );
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    mySLides = getSlides();
+    controller = new PageController();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var refreshGridView;
-    return GridView.builder(
-      itemCount: imageList.length,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2, childAspectRatio: 4.6 / 4.0),
-      itemBuilder: (context, index) {
-        File file = new File(imageList[index]);
-        String name = file.path;
-        return Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0),
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [const Color(0xff3C8CE7), const Color(0xff00EAFF)])),
+      child: Scaffold(
+        backgroundColor: CustomColors.firebaseViolet,
+        body: Container(
+          height: MediaQuery.of(context).size.height - 200,
+          child: PageView(
+            controller: controller,
+            onPageChanged: (index) {
+              setState(() {
+                slideIndex = index;
+              });
+            },
+            children: <Widget>[
+              SlideTile(
+                imagePath: mySLides[0].getImageAssetPath(),
+                title: mySLides[0].getTitle(),
+                desc: mySLides[0].getDesc(),
+              ),
+              SlideTile(
+                imagePath: mySLides[1].getImageAssetPath(),
+                title: mySLides[1].getTitle(),
+                desc: mySLides[1].getDesc(),
+              ),
+              SlideTile(
+                imagePath: mySLides[2].getImageAssetPath(),
+                title: mySLides[2].getTitle(),
+                desc: mySLides[2].getDesc(),
+              )
+            ],
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: InkWell(
-              onTap: () => {
-                refreshGridView = Navigator.push(context,
-                    MaterialPageRoute(builder: (context) {
-                  return Text(name);
-                })).then((refreshGridView) {
-                  if (refreshGridView != null) {
-                    build(context);
-                  }
-                }).catchError((er) {
-                  print(er);
-                }),
-              },
-              child: Padding(
-                padding: new EdgeInsets.all(4.0),
-                child: Image.file(
-                  File(imageList[index]),
-                  fit: BoxFit.cover,
+        ),
+        bottomSheet: slideIndex != 2
+            ? Container(
+                margin: EdgeInsets.symmetric(vertical: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    FlatButton(
+                      onPressed: () {
+                        controller.animateToPage(2,
+                            duration: Duration(milliseconds: 400),
+                            curve: Curves.linear);
+                      },
+                      splashColor: CustomColors.firebaseRed,
+                      child: Text(
+                        "SKIP",
+                        style: TextStyle(
+                            color: Color(0xFF0074E4),
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    Container(
+                      child: Row(
+                        children: [
+                          for (int i = 0; i < 3; i++)
+                            i == slideIndex
+                                ? _buildPageIndicator(true)
+                                : _buildPageIndicator(false),
+                        ],
+                      ),
+                    ),
+                    FlatButton(
+                      onPressed: () {
+                        print("this is slideIndex: $slideIndex");
+                        controller.animateToPage(slideIndex + 1,
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.linear);
+                      },
+                      splashColor: CustomColors.firebaseRed,
+                      child: Text(
+                        "NEXT",
+                        style: TextStyle(
+                            color: Color(0xFF0074E4),
+                            fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : InkWell(
+                onTap: () {
+                  print("Get Started Now");
+                  // _settingModalBottomSheet(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignInScreen()),
+                  );
+                },
+                child: Container(
+                  height: Platform.isIOS ? 70 : 60,
+                  color: CustomColors.firebaseRed,
+                  alignment: Alignment.center,
+                  child: Text(
+                    "GET STARTED NOW",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
                 ),
               ),
-            ),
+      ),
+    );
+  }
+}
+
+class SlideTile extends StatelessWidget {
+  String imagePath, title, desc;
+
+  SlideTile({this.imagePath, this.title, this.desc});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Image.asset(
+            imagePath,
+            height: 150,
+            width: 150,
           ),
-        );
-      },
+          SizedBox(
+            height: 100,
+          ),
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.w500, fontSize: 20),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Text(desc,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14))
+        ],
+      ),
     );
   }
 }

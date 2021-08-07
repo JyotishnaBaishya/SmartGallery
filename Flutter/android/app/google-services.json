@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "722954405171",
-    "project_id": "smart-gallery-2af21",
-    "storage_bucket": "smart-gallery-2af21.appspot.com"
+    "project_number": "163850018174",
+    "project_id": "smortgaleery",
+    "storage_bucket": "smortgaleery.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:722954405171:android:f2c2cd72ec344f03806a46",
+        "mobilesdk_app_id": "1:163850018174:android:f551583ea3c9ff1467e72f",
         "android_client_info": {
           "package_name": "com.example.camera_gallery"
         }
       },
       "oauth_client": [
         {
-          "client_id": "722954405171-nfqqdhku4gb3nqpf0b3ogfgb58vi1pql.apps.googleusercontent.com",
+          "client_id": "163850018174-umfmmm4qcmap20pjf90tav4goh3h8r35.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.camera_gallery",
+            "certificate_hash": "fa6ffee201046a42745cd75680278eede1efdabb"
+          }
+        },
+        {
+          "client_id": "163850018174-jv3nfg0mgorm3bg90bn9avbcabq33m9v.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD06jcM9tR71o5c-3qqIF7IYSKHerTOc24"
+          "current_key": "AIzaSyDNuagx1Qs8YK-wLcj4V3HStgyeF-HaU-M"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "722954405171-nfqqdhku4gb3nqpf0b3ogfgb58vi1pql.apps.googleusercontent.com",
+              "client_id": "163850018174-jv3nfg0mgorm3bg90bn9avbcabq33m9v.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
