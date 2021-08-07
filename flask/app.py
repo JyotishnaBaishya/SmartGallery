@@ -7,9 +7,9 @@ import csv, os, requests, json
 from utils.encode import encode_text
 from PIL import Image
 from io import BytesIO
-# import firebase_admin
-# from firebase_admin import credentials
-# from firebase_admin import firestore
+import firebase_admin
+from firebase_admin import credentials
+from firebase_admin import firestore
 from firebase_admin import storage
 import os
 import tempfile
@@ -20,6 +20,10 @@ UPLOAD_FOLDER=os.path.join(app.root_path, 'static/images')
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+cred=credentials.Certificate('./utils/smart-gallery-2af21-firebase-adminsdk-atefv-b46b85fcb6.json')
+firebase_admin.initialize_app(cred,{'storageBucket': 'smart-gallery-2af21.appspot.com'})
+db = firestore.client()
+
 @app.route('/', methods=['GET'])
 def search():
 	key=request.args.get('key')
@@ -27,30 +31,33 @@ def search():
 	if not key:
 	    return render_template('search.html', res=res)
 		# return jsonify({"Sc": "nokey"})
-
-	with open("static/tags.csv", 'r') as csvfile:
-		csvreader = csv.reader(csvfile)
-		fields = next(csvreader)
-		url="https://f679eeaaf26c.ngrok.io/similarity/"
-		for row in csvreader:
-			res1=requests.post(url, data=json.dumps({'s1': key, 's2': row[1]}))
-			ress=json.loads(res1.text)
-			print(ress)
-			sim=ress['sim']
-			if sim>0.001:
-				res.append((sim, row[0]))
-				# res.append(row[0])
-			# max_sim= sim(keys, li)
-			# if max_sim:
-			# 	res.append(max_sim,row[0])
-		res.sort(reverse=True)
-		resx=[]
-		for r in res:
-			p, q=r
-			print(p)
-			resx.append(q)
+	d_ref=db.collection(u'pictures/some_user/userid')
+	userpics=d_ref.get()
+	userpics_dict = [ el.to_dict() for el in userpics ]
+		
+	# with open("static/tags.csv", 'r') as csvfile:
+	# 	csvreader = csv.reader(csvfile)
+	# 	fields = next(csvreader)
+	url="https://8588690db21a.ngrok.io/similarity/"
+	for v in userpics_dict:
+		res1=requests.post(url, data=json.dumps({'s1': key, 's2': v['tags']}))
+		ress=json.loads(res1.text)
+		print(ress)
+		sim=ress['sim']
+		if sim>0.001:
+			res.append((sim,v['image']))
+	# 			# res.append(row[0])
+	# 		# max_sim= sim(keys, li)
+	# 		# if max_sim:
+	# 		# 	res.append(max_sim,row[0])
+	res.sort(reverse=True)
+	resx=[]
+	for r in res:
+		p, q=r
+		print(p)
+		resx.append(q)
 	return jsonify({"SX": resx})
-	# return render_template('search.html', res=res)
+	# return render_template('search.html', res=userpics_dict)
 @app.route('/upload', methods=['GET', 'POST'])
 def upload():
 	if request.method=="POST":
@@ -63,9 +70,7 @@ def upload():
 			return "dsjbks"
 		print(images)
 		# restx={}
-		cred=credentials.Certificate('flask/utils/google-services.json')
-		firebase_admin.initialize_app(cred,{'storageBucket': 'gs://smart-gallery-2af21.appspot.com'})
-		db = firestore.client()
+		
 		for image in images:
 			print(image.filename)
 			# image.save(os.path.join(UPLOAD_FOLDER, secure_filename(image.filename)))
@@ -84,13 +89,13 @@ def upload():
 			# Opt : if you want to make public access from the URL
 			blob.make_public()
 			print("your file url", blob.public_url)
-			os.remove(temp.name)
-			bytearr=image.read()
+			
+			bytearr=temp.read()
 			# im=encode_text(bytearr)
-			url = "https://f679eeaaf26c.ngrok.io"
+			url = "https://8588690db21a.ngrok.io"
 			fn=secure_filename(image.filename)
 			print(fn)
-			files = {'file': bytearr}
+			files = {'file':bytearr}
 			res=requests.post(url, files=files)
 			print(res)
 			tags=(json.loads(res.text))
@@ -98,14 +103,13 @@ def upload():
 			st=",".join(tags["bsx"])
 			# Use the application default credentials
 			data={
-				u'image': im,
+				u'image':blob.public_url,
 				u'tags': st,
 			}
 			# # Add a new doc in collection 'cities' with ID 'LA'
-			db.collection(u'pictures').document(u'some_user').set(data)
-			with open("static/tags.csv", 'a+', newline='') as csvfile:
-				csvwriter = csv.writer(csvfile)
-				csvwriter.writerow([im, st])
+			db.collection(u'pictures/some_user/userid').add(data)
+			temp.close()
+			
 		return make_response(jsonify({'tags': "okay"}), 200)
 	return render_template('form.html', msg="")
 
