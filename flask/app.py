@@ -10,6 +10,9 @@ from io import BytesIO
 # import firebase_admin
 # from firebase_admin import credentials
 # from firebase_admin import firestore
+from firebase_admin import storage
+import os
+import tempfile
 
 app=Flask(__name__)
 
@@ -60,9 +63,9 @@ def upload():
 			return "dsjbks"
 		print(images)
 		# restx={}
-		# cred=credentials.Certificate('flask/utils/google-services.json')
-		# firebase_admin.initialize_app(cred)
-		# db = firestore.client()
+		cred=credentials.Certificate('flask/utils/google-services.json')
+		firebase_admin.initialize_app(cred,{'storageBucket': 'gs://smart-gallery-2af21.appspot.com'})
+		db = firestore.client()
 		for image in images:
 			print(image.filename)
 			# image.save(os.path.join(UPLOAD_FOLDER, secure_filename(image.filename)))
@@ -72,8 +75,18 @@ def upload():
 			# tags['bsx']=[]
 			# for i in range(0, len(classes[0])):
 			# 	tags['bsx'].append(classes[0][i][1])
+			bucket=storage.bucket()
+			temp=tempfile.NamedTemporaryFile(delete=False)
+			image.save(temp.name)
+			bucket = storage.bucket()
+			blob = bucket.blob(temp.name)
+			blob.upload_from_filename(temp.name)
+			# Opt : if you want to make public access from the URL
+			blob.make_public()
+			print("your file url", blob.public_url)
+			os.remove(temp.name)
 			bytearr=image.read()
-			im=encode_text(bytearr)
+			# im=encode_text(bytearr)
 			url = "https://f679eeaaf26c.ngrok.io"
 			fn=secure_filename(image.filename)
 			print(fn)
@@ -84,12 +97,12 @@ def upload():
 			print(tags)
 			st=",".join(tags["bsx"])
 			# Use the application default credentials
-			# data={
-			# 	u'image': im,
-			# 	u'tags': st,
-			# }
+			data={
+				u'image': im,
+				u'tags': st,
+			}
 			# # Add a new doc in collection 'cities' with ID 'LA'
-			# db.collection(u'pictures').document(u'some_user').set(data)
+			db.collection(u'pictures').document(u'some_user').set(data)
 			with open("static/tags.csv", 'a+', newline='') as csvfile:
 				csvwriter = csv.writer(csvfile)
 				csvwriter.writerow([im, st])
