@@ -20,6 +20,8 @@ class CounterStorage {
 
       // Read the file
       final contents = await file.readAsString();
+      print(contents);
+      print('jsonread');
       Map<String, dynamic> jsondata = json.decode(contents);
       return jsondata;
     } catch (e) {
@@ -30,11 +32,12 @@ class CounterStorage {
     }
   }
 
-  Future<void> writeCounter(String x) async {
+  Future<File> writeCounter(String x) async {
     final file = await _localFile;
-
-    Map<String, dynamic> cont = await readCounter();
+    final cont = await readCounter();
     cont[x] = "OK";
-    file.writeAsString(jsonEncode(cont));
+    print(cont);
+    // Write the file
+    return file.writeAsString('$cont');
   }
 }

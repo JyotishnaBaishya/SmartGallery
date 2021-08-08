@@ -10,11 +10,10 @@ import 'package:camera_gallery/providers/social_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:camera_gallery/screens/searchscreen.dart';
 // import 'screens/signinscreen.dart';
-import 'package:camera_gallery/providers/filestore.dart';
+
 // import 'widgets/google_sign_in_button.dart';
 
 final Directory _photoDir = new Directory('/storage/emulated/0/SmartGallery');
-final CounterStorage counterStorage = new CounterStorage();
 
 class ImageCapture extends StatefulWidget {
   const ImageCapture({Key? key, required User user})
@@ -32,7 +31,8 @@ class _ImageCaptureState extends State<ImageCapture> {
   late List imageList;
   late User user = widget._user;
   late Map<String, dynamic> fle;
-  late List images;
+  late List imagesupload;
+
   // late List searchList;
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
@@ -54,11 +54,13 @@ class _ImageCaptureState extends State<ImageCapture> {
   Future<String> uploadImage(images, url) async {
     var request = http.MultipartRequest('POST', Uri.parse(url));
     request.fields['email'] = this.user.email;
+    int i = 0;
     images.forEach((file) async {
       request.files
           .add(await http.MultipartFile.fromPath(file.toString(), file));
-      counterStorage.writeCounter(file.toString());
     });
+    print(request.files);
+
     http.Response response =
         await http.Response.fromStream(await request.send());
     return response.body;
@@ -113,13 +115,8 @@ class _ImageCaptureState extends State<ImageCapture> {
   @override
   void initState() {
     user = widget._user;
+    imagesupload = ['init'];
     super.initState();
-    counterStorage.readCounter().then((Map<String, dynamic> val) {
-      setState(() {
-        fle = val;
-        print(fle);
-      });
-    });
   }
 
   @override
@@ -148,14 +145,8 @@ class _ImageCaptureState extends State<ImageCapture> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () async {
-            this.imageList.forEach((image) {
-              if (fle.containsKey(image)) {
-              } else
-                images.add(image);
-            });
-            print(images);
             var url = "https://smartgalleryapi.herokuapp.com/upload";
-            var res = await uploadImage(this.images, url);
+            var res = await uploadImage(this.imageList, url);
             print(res);
           },
           child: Icon(Icons.add_a_photo_outlined)),
