@@ -1,131 +1,12 @@
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-
-// import './screens/take_pic_screen.dart';
-// import './screens/tabs_screen.dart';
-// import './providers/pictures.dart';
-// import './screens/view_images.dart';
-// //import 'package:flutter_search_bar/flutter_search_bar.dart';
-
-// void main() => runApp(MyApp());
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MultiProvider(
-//       providers: [
-//         ChangeNotifierProvider<Pictures>(create: (_) => Pictures()),
-//       ],
-//       child: Container(
-//         child: MaterialApp(
-//           title: 'Camera and Gallery tutorial',
-//           theme: ThemeData(
-//             accentColor: Colors.red,
-//             fontFamily: 'Lato',
-//             textTheme: ThemeData.light().textTheme.copyWith(
-//                   title: TextStyle(
-//                     fontSize: 20,
-//                     fontFamily: 'Lato',
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                 ),
-//           ),
-//           routes: {
-//             '/': (ctx) => TabsScreen(),
-//             TakePicScreen.routeName: (ctx) => TakePicScreen(),
-//             ViewImages.routeName: (ctx) => ViewImages(),
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class FirstRoute extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('First Route'),
-//       ),
-//       body: Center(
-//         child: ElevatedButton(
-//           child: Text('Open route'),
-//           onPressed: () {
-//             Navigator.push(
-//               context,
-//               MaterialPageRoute(builder: (context) => SecondRoute()),
-//             );
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class SecondRoute extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text("Second Route"),
-//       ),
-//       body: Center(
-//         child: ElevatedButton(
-//           onPressed: () {
-//             Navigator.pop(context);
-//           },
-//           child: Text('Go back!'),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// import 'package:flutter/material.dart';
-// import 'dart:io';
-
-// void main() => runApp(MyApp());
-
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Flutter Image Demo',
-//       home: Scaffold(
-//         appBar: AppBar(
-//           title: const Text('Flutter Image Demo'),
-//         ),
-//         body: new Container(
-//           color: Colors.grey[200],
-//           child: Image.file(new File(
-//               '/storage/emulated/0/DCIM/Screenshots/IMG_20210709_171743.jpg')),
-//           alignment: Alignment.center,
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// import 'dart:async';
 // @dart=2.9
 import 'dart:io';
 import 'package:camera_gallery/screens/signinscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_search_bar/flutter_search_bar.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'screens/signinscreen.dart';
-import 'providers/social_auth.dart';
-import 'widgets/google_sign_in_button.dart';
-import 'screens/imagecapture.dart';
 import 'data/data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:camera_gallery/res/custom_colors.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:path/path.dart';
-// import 'package:path_provider/path_provider.dart';
 
 void main() => runApp(MyApp());
 
@@ -139,11 +20,6 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: Home(),
-//       routes: {
-//         '/': (ctx) => HomeRoute(),
-// //             TakePicScreen.routeName: (ctx) => TakePicScreen(),
-// //             ViewImages.routeName: (ctx) => ViewImages(),
-//       },
     );
   }
 }
@@ -172,7 +48,6 @@ class _HomeState extends State<Home> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     mySLides = getSlides();
     controller = new PageController();

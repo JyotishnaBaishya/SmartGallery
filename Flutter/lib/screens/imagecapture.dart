@@ -1,17 +1,12 @@
 import 'dart:io';
 import 'package:camera_gallery/res/custom_colors.dart';
-import 'package:camera_gallery/screens/signinscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_search_bar/flutter_search_bar.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:camera_gallery/providers/social_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:camera_gallery/screens/searchscreen.dart';
-// import 'screens/signinscreen.dart';
-
-// import 'widgets/google_sign_in_button.dart';
 
 final Directory _photoDir = new Directory('/storage/emulated/0/SmartGallery');
 
@@ -32,16 +27,8 @@ class _ImageCaptureState extends State<ImageCapture> {
   late User user = widget._user;
   late Map<String, dynamic> fle;
   late List imagesupload;
-
-  // late List searchList;
   AppBar buildAppBar(BuildContext context) {
     return new AppBar(
-        // onPressed: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(builder: (context) => HomePage()),
-        // );
-        //   },
         backgroundColor: CustomColors.firebaseNavy,
         title: Image.asset(
           'assets/images/appbar_logo.png',
@@ -82,11 +69,8 @@ class _ImageCaptureState extends State<ImageCapture> {
     print(res);
     var values = json.decode(res);
     late List searchList;
-    // values.map((val) => searchList = val.toList());
     searchList = values["SX"];
     print(searchList);
-    // return ImageGrid2(imageList2: searchList);
-    // this.searchList = searchList;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
         builder: (context) => Search(
@@ -96,14 +80,6 @@ class _ImageCaptureState extends State<ImageCapture> {
       ),
     );
   }
-  // Widget onSubmitted(String keyword) {
-  //   var params = {
-  //     'key': keyword,
-  //   };
-  //   var res = http.get(Uri.https("http://127.0.0.1:5000", '/', params));
-  //   print(res);
-  //   return ImageGrid(imageList: this.imageList);
-  // }
 
   _ImageCaptureState() {
     searchBar = new SearchBar(
@@ -126,20 +102,12 @@ class _ImageCaptureState extends State<ImageCapture> {
       body: Container(
         child: FutureBuilder(
           builder: (context, status) {
-            // if (this.searchList == null) {
             this.imageList = _photoDir
                 .listSync(recursive: true)
                 .map((item) => item.path)
                 .where((item) => item.endsWith(".jpg"))
                 .toList(growable: false);
             return ImageGrid(imageList: this.imageList);
-            // }
-            // this.imageList = _photoDir
-            //     .listSync(recursive: true)
-            //     .map((item) => item.path)
-            //     .where((item) => item.endsWith(".jpeg"))
-            //     .toList(growable: false);
-            // return ImageGrid(imageList: this.searchList);
           },
         ),
       ),
@@ -203,10 +171,6 @@ class ImageGrid extends StatelessWidget {
   }
 }
 
-//to be returned
 
-  // TODO: implement key
 
- 
 
- 

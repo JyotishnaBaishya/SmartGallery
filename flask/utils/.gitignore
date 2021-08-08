@@ -1,3 +1,5 @@
 word2vec.model.vectors.npy
 word2vec.model
 /dataset
+git rm --cached google-services.json
+git rm --cached smart-gallery-2af21-firebase-adminsdk-atefv-b46b85fcb6.json

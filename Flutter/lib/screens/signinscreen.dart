@@ -38,20 +38,6 @@ class _SignInScreenState extends State<SignInScreen> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    // Text(
-                    //   'SignIn Page',
-                    //   style: TextStyle(
-                    //     color: CustomColors.firebaseGrey,
-                    //     fontSize: 25,
-                    //   ),
-                    // ),
-                    // Text(
-                    //   'Authentication Page',
-                    //   style: TextStyle(
-                    //     color: CustomColors.firebaseOrange,
-                    //     fontSize: 20,
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
