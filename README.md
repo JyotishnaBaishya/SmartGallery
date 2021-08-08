@@ -32,13 +32,19 @@ ML Models:
 <!-- <img src=".jpg" width="324" height="324"> -->
 
 <p align="center">
-  <img src="/static/1.jpg" width="256" height="455">
-  <img src="/static/2.jpg" width="256" height="455">
-  <img src="/static/3.jpg" width="256" height="455">
+  <img src="/static/1.jpg" width="250" height="460">
+  <img src="/static/2.jpg" width="250" height="460">
+  <img src="/static/3.jpg" width="250" height="460">
 </p>
-![Alt text](/static/5.jpg?raw=true)
-![Alt text](/static/6.jpg?raw=true)
-![Alt text](/static/7.jpeg?raw=true)
+<p align="center">
+  <img src="/static/4.jpg" width="250" height="460">
+  <img src="/static/5.jpg" width="250" height="460">
+  <img src="/static/6.jpg" width="250" height="460">
+</p>
+<p align=center>
+  <img src="/static/7.jpg" width="250" height="460">
+</p>
+
 
 ## Additional
 
