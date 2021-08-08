@@ -42,7 +42,7 @@ ML Models:
   <img src="/static/6.jpg" width="250" height="460">
 </p>
 <p align=center>
-  <img src="/static/7.jpg" width="250" height="460">
+  <img src="/static/7.jpeg" width="250" height="460">
 </p>
 
 
