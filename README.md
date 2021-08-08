@@ -29,10 +29,13 @@ ML Models:
 
 ## Illustrations
 
-![Alt text](/static/1.jpg?raw=true)
-![Alt text](/static/2.jpg?raw=true)
-![Alt text](/static/3.jpg?raw=true)
-![Alt text](/static/4.jpg?raw=true)
+<!-- <img src=".jpg" width="324" height="324"> -->
+
+<p align="center">
+  <img src="/static/1.jpg" width="256" height="455">
+  <img src="/static/2.jpg" width="256" height="455">
+  <img src="/static/3.jpg" width="256" height="455">
+</p>
 ![Alt text](/static/5.jpg?raw=true)
 ![Alt text](/static/6.jpg?raw=true)
 ![Alt text](/static/7.jpeg?raw=true)
